@@ -1,0 +1,2895 @@
+<!DOCTYPE hDate
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RewardFiesta | Secure CPA Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.0.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.2.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-gradient-colors@1.0.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fingerprintjs2@2.1.4/dist/fingerprint2.min.js"></script>
+    <style>
+        :root {
+            --primary: #3a7bd5;
+            --primary-light: #00d2ff;
+            --primary-dark: #1a4b8c;
+            --secondary: #2c3e50;
+            --success: #38ef7d;
+            --danger: #ff416c;
+            --warning: #ff9a00;
+            --info: #24fe41;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --white: #ffffff;
+            --gray: #6c757d;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --glass: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            --gradient: linear-gradient(135deg, var(--primary), var(--primary-light));
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ed 100%);
+            color: var(--secondary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Auth Container Styles */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a4b8c 0%, #3a7bd5 100%);
+        }
+
+        .auth-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--border-radius);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out forwards;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: var(--gradient);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .auth-logo i {
+            font-size: 40px;
+            color: var(--primary);
+            background: rgba(58, 123, 213, 0.1);
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            border: 2px solid rgba(58, 123, 213, 0.3);
+        }
+
+        .auth-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        .auth-subtitle {
+            font-size: 15px;
+            color: var(--gray);
+            margin-bottom: 30px;
+        }
+
+        .auth-form .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .auth-form .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--secondary);
+            font-size: 14px;
+        }
+
+        .auth-form .form-control {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.8);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .auth-form .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(58, 123, 213, 0.2);
+            background: var(--white);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: var(--gradient);
+            color: white;
+            margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.5s;
+        }
+
+        .auth-btn:hover::before {
+            left: 100%;
+        }
+
+        .auth-btn:hover {
+            box-shadow: 0 10px 25px rgba(58, 123, 213, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .auth-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .token-display {
+            background: rgba(58, 123, 213, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: center;
+            font-family: monospace;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+            word-break: break-all;
+            border: 1px dashed rgba(58, 123, 213, 0.3);
+        }
+
+        .token-timer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .token-timer span {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .glow-effect {
+            position: relative;
+        }
+
+        .glow-effect::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 8px;
+            background: linear-gradient(45deg, 
+                rgba(58, 123, 213, 0.3), 
+                rgba(0, 210, 255, 0.3), 
+                rgba(58, 123, 213, 0.3));
+            background-size: 200% 200%;
+            animation: gradientGlow 3s ease infinite;
+            z-index: -1;
+            filter: blur(5px);
+            opacity: 0.7;
+        }
+
+        @keyframes gradientGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Dashboard Styles (same as before) */
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 20px;
+            display: none; /* Initially hidden until auth */
+        }
+
+        header {
+            background: var(--gradient);
+            color: white;
+            padding: 25px 0;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            box-shadow: var(--box-shadow);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+            animation: shine 8s infinite linear;
+        }
+
+        @keyframes shine {
+            0% { transform: rotate(30deg) translate(-10%, -10%); }
+            100% { transform: rotate(30deg) translate(10%, 10%); }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo i {
+            font-size: 32px;
+            color: var(--white);
+            background: rgba(255, 255, 255, 0.2);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .last-updated {
+            font-size: 14px;
+            opacity: 0.9;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: none;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+            border: 1px solid var(--glass-border);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 5px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-card .change {
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+
+        .stat-card .change.positive {
+            color: var(--success);
+        }
+
+        .stat-card .change.negative {
+            color: var(--danger);
+        }
+
+        .stat-card .additional-info {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 25px;
+            margin-bottom: 30px;
+            transition: var(--transition);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .card-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--secondary);
+            margin: 0;
+            position: relative;
+            display: inline-block;
+        }
+
+        .card-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -16px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--gradient);
+            border-radius: 3px;
+        }
+
+        .card-header .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn i {
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 6px 20px rgba(58, 123, 213, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: var(--white);
+            box-shadow: 0 6px 20px rgba(58, 123, 213, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #00b09b);
+            color: var(--white);
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 6px 20px rgba(56, 239, 125, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #ff4b2b);
+            color: var(--white);
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 6px 20px rgba(255, 65, 108, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-sm {
+            padding: 8px 14px;
+            font-size: 13px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        th, td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        th {
+            background: var(--gradient);
+            color: var(--white);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:hover {
+            background-color: rgba(58, 123, 213, 0.05);
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-conversion {
+            background-color: rgba(56, 239, 125, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(56, 239, 125, 0.3);
+        }
+
+        .status-chargeback {
+            background-color: rgba(255, 65, 108, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(255, 65, 108, 0.3);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-primary {
+            background-color: rgba(58, 123, 213, 0.1);
+            color: var(--primary);
+            border: 1px solid rgba(58, 123, 213, 0.3);
+        }
+
+        .badge-success {
+            background-color: rgba(56, 239, 125, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(56, 239, 125, 0.3);
+        }
+
+        .badge-warning {
+            background-color: rgba(255, 154, 0, 0.1);
+            color: var(--warning);
+            border: 1px solid rgba(255, 154, 0, 0.3);
+        }
+
+        .offer-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .offer-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient);
+        }
+
+        .offer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .offer-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .offer-card-title {
+            font-weight: 700;
+            color: var(--secondary);
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .offer-card-payout {
+            font-weight: 700;
+            color: var(--success);
+            font-size: 18px;
+            background: linear-gradient(135deg, var(--success), #00b09b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .offer-card-body {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .offer-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .offer-card-id {
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .copy-btn {
+            background: rgba(58, 123, 213, 0.1);
+            color: var(--primary);
+            border: none;
+            padding: 5px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+
+        .copy-btn:hover {
+            background: rgba(58, 123, 213, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .copy-btn i {
+            font-size: 14px;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%);
+            border-radius: var(--border-radius);
+            width: 100%;
+            max-width: 600px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            transform: translateY(-30px) scale(0.95);
+            transition: var(--transition);
+            border: 1px solid var(--glass-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: var(--gradient);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .modal-header h2 {
+            font-size: 24px;
+            margin: 0;
+            color: var(--secondary);
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+        }
+
+        .modal-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--gradient);
+            border-radius: 3px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray);
+            transition: var(--transition);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 65, 108, 0.1);
+            color: var(--danger);
+            transform: rotate(90deg);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--secondary);
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 18px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.8);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(58, 123, 213, 0.2);
+            background: var(--white);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .tabs::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            height: 2px;
+            background: var(--gradient);
+            transition: var(--transition);
+            border-radius: 2px;
+        }
+
+        .tab {
+            padding: 12px 25px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--gray);
+            border-bottom: 2px solid transparent;
+            transition: var(--transition);
+            position: relative;
+            font-size: 14px;
+        }
+
+        .tab.active {
+            color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 350px;
+            width: 100%;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 13px;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.3s;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .no-leads {
+            text-align: center;
+            padding: 50px;
+            color: var(--gray);
+        }
+
+        .no-leads i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: #e4e8ed;
+            opacity: 0.7;
+        }
+
+        .no-leads h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        .no-leads p {
+            margin-bottom: 25px;
+            font-size: 15px;
+        }
+
+        .no-offers {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray);
+        }
+
+        .no-offers i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: #e4e8ed;
+            opacity: 0.7;
+        }
+
+        .no-offers h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        .no-offers p {
+            margin-bottom: 25px;
+            font-size: 15px;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--success);
+            color: white;
+            padding: 15px 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            max-width: 350px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .toast i {
+            font-size: 20px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .toast.error {
+            background: linear-gradient(135deg, var(--danger), #ff4b2b);
+        }
+
+        .toast.warning {
+            background: linear-gradient(135deg, var(--warning), #ff6e00);
+        }
+
+        .toast.info {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        }
+
+        /* Loading spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: var(--white);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Pulse animation for new leads */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 0.5s ease-in-out;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .dashboard-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .last-updated {
+                margin-top: 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .dashboard-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .stat-card .value {
+                font-size: 28px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            th, td {
+                padding: 12px 15px;
+            }
+            
+            .modal-content {
+                padding: 25px;
+                margin: 0 15px;
+            }
+            
+            .auth-card {
+                padding: 30px 20px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-card {
+                padding: 20px;
+            }
+            
+            .tabs {
+                overflow-x: auto;
+                white-space: nowrap;
+                padding-bottom: 5px;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .tab {
+                padding: 10px 15px;
+                font-size: 13px;
+            }
+            
+            .btn {
+                padding: 8px 14px;
+                font-size: 13px;
+            }
+            
+            .toast {
+                max-width: calc(100% - 30px);
+                bottom: 15px;
+                right: 15px;
+            }
+            
+            .auth-card {
+                padding: 25px 15px;
+            }
+            
+            .auth-title {
+                font-size: 24px;
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(58, 123, 213, 0.5);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        /* Custom toggle switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background: var(--gradient);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Settings panel */
+        .settings-panel {
+            position: fixed;
+            top: 100px;
+            right: -300px;
+            width: 300px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%);
+            border-radius: var(--border-radius) 0 0 var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            z-index: 999;
+            transition: var(--transition);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .settings-panel.open {
+            right: 0;
+        }
+
+        .settings-toggle {
+            position: absolute;
+            left: -40px;
+            top: 20px;
+            width: 40px;
+            height: 40px;
+            background: var(--gradient);
+            color: white;
+            border-radius: var(--border-radius) 0 0 var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--box-shadow);
+            border: 1px solid var(--glass-border);
+        }
+
+        .settings-toggle i {
+            font-size: 20px;
+        }
+
+        .settings-group {
+            margin-bottom: 20px;
+        }
+
+        .settings-group h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: var(--secondary);
+            position: relative;
+        }
+
+        .settings-group h3::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: var(--gradient);
+        }
+
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .settings-item label {
+            font-size: 14px;
+            color: var(--secondary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Authentication Container (shown first) -->
+    <div class="auth-container" id="authContainer">
+        <div class="auth-card" id="authCard">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h1 class="auth-title">Secure Access Required</h1>
+                <p class="auth-subtitle">Please authenticate to access the CPA Dashboard</p>
+            </div>
+            
+            <div id="requestTokenForm">
+                <form class="auth-form" id="tokenRequestForm">
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" class="form-control" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group glow-effect">
+                        <button type="submit" class="auth-btn" id="requestTokenBtn">
+                            <i class="fas fa-key"></i> Get Access Token
+                        </button>
+                    </div>
+                </form>
+                <div class="auth-footer">
+                    You'll receive your access token after verification
+                </div>
+            </div>
+            
+            <div id="submitTokenForm" style="display: none;">
+                <form class="auth-form" id="tokenSubmitForm">
+                    <div class="form-group">
+                        <label for="accessToken">Access Token</label>
+                        <input type="text" id="accessToken" class="form-control" placeholder="Enter your access token" required>
+                    </div>
+                    <div class="form-group glow-effect">
+                        <button type="submit" class="auth-btn" id="submitTokenBtn">
+                            <i class="fas fa-unlock"></i> Submit Token
+                        </button>
+                    </div>
+                </form>
+                <div class="token-timer">
+                    Token expires in: <span id="tokenTimer">6 days</span>
+                </div>
+                <div class="auth-footer">
+                    Don't have a token? <a href="#" id="backToRequest">Request one</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Container (hidden until auth) -->
+    <div class="container" id="dashboardContainer">
+        <!-- Settings Panel -->
+        <div class="settings-panel" id="settingsPanel">
+            <div class="settings-toggle" id="settingsToggle">
+                <i class="fas fa-cog"></i>
+            </div>
+            <div class="settings-group">
+                <h3>Dashboard Settings</h3>
+                <div class="settings-item">
+                    <label for="soundToggle">Lead Notification Sound</label>
+                    <label class="switch">
+                        <input type="checkbox" id="soundToggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="settings-item">
+                    <label for="themeToggle">Dark Mode</label>
+                    <label class="switch">
+                        <input type="checkbox" id="themeToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="settings-group">
+                <h3>Your Affiliate ID</h3>
+                <div class="form-group">
+                    <input type="text" id="affiliateId" class="form-control" placeholder="Enter your affiliate ID">
+                </div>
+                <button class="btn btn-primary btn-sm" id="saveAffiliateId">Save ID</button>
+            </div>
+            <div class="settings-group">
+                <h3>Access Token</h3>
+                <div class="token-timer">
+                    Expires in: <span id="dashboardTokenTimer">6 days</span>
+                </div>
+                <button class="btn btn-danger btn-sm" id="logoutBtn" style="width: 100%; margin-top: 10px;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-chart-network"></i>
+                    <h1>RewardFiesta CPA Dashboard</h1>
+                </div>
+                <div class="last-updated" id="lastUpdated">Loading data...</div>
+            </div>
+        </header>
+
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <h3>Today's Leads</h3>
+                <div class="value" id="todaysLeads">0</div>
+                <div class="change positive" id="todaysLeadsChange">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>0%</span>
+                </div>
+                <div class="additional-info">
+                    <i class="fas fa-calendar-day"></i>
+                    <span>Resets daily at 12:00 PM (BD Time)</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <h3>Today's Income</h3>
+                <div class="value" id="todaysIncome">$0.00</div>
+                <div class="change positive" id="todaysIncomeChange">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>0%</span>
+                </div>
+                <div class="additional-info">
+                    <i class="fas fa-calendar-day"></i>
+                    <span>Resets daily at 12:00 PM (BD Time)</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Leads</h3>
+                <div class="value" id="totalLeads">0</div>
+                <div class="change positive" id="leadsChange">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>0%</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Income</h3>
+                <div class="value" id="totalIncome">$0.00</div>
+                <div class="change positive" id="incomeChange">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>0%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-content">
+            <div class="main-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Leads Overview</h2>
+                        <div class="actions">
+                            <button class="btn btn-outline" id="refreshLeads">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                            <button class="btn btn-primary" id="addOfferBtn">
+                                <i class="fas fa-plus"></i> Add Offer
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="tabs">
+                        <div class="tab active" data-tab="all">All Leads</div>
+                        <div class="tab" data-tab="conversions">Conversions</div>
+                        <div class="tab" data-tab="chargebacks">Chargebacks</div>
+                        <div class="tab" data-tab="your-leads">Your Leads</div>
+                    </div>
+                    
+                    <div class="tab-content active" id="tab-all">
+                        <div class="table-responsive">
+                            <table id="leadsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Lead ID</th>
+                                        <th>Offer</th>
+                                        <th>Payout</th>
+                                        <th>Country</th>
+                                        <th>Status</th>
+                                        <th>Time</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leadsTableBody">
+                                    <!-- Leads will be injected here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="tab-conversions">
+                        <div class="table-responsive">
+                            <table id="conversionsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Lead ID</th>
+                                        <th>Offer</th>
+                                        <th>Payout</th>
+                                        <th>Country</th>
+                                        <th>Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="conversionsTableBody">
+                                    <!-- Conversions will be injected here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="tab-chargebacks">
+                        <div class="table-responsive">
+                            <table id="chargebacksTable">
+                                <thead>
+                                    <tr>
+                                        <th>Lead ID</th>
+                                        <th>Offer</th>
+                                        <th>Payout</th>
+                                        <th>Country</th>
+                                        <th>Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="chargebacksTableBody">
+                                    <!-- Chargebacks will be injected here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="tab-your-leads">
+                        <div class="table-responsive">
+                            <table id="yourLeadsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Lead ID</th>
+                                        <th>Offer</th>
+                                        <th>Payout</th>
+                                        <th>Country</th>
+                                        <th>Status</th>
+                                        <th>Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="yourLeadsTableBody">
+                                    <!-- Your leads will be injected here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Daily Leads Analytics</h2>
+                        <div class="actions">
+                            <select id="chartTimeRange" class="btn btn-outline btn-sm">
+                                <option value="7">Last 7 Days</option>
+                                <option value="14">Last 14 Days</option>
+                                <option value="30">Last 30 Days</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="leadsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Your Offers</h2>
+                        <button class="btn btn-primary btn-sm" id="addOfferBtnSidebar">
+                            <i class="fas fa-plus"></i> Add
+                        </button>
+                    </div>
+                    <div id="offersList">
+                        <!-- Offers will be injected here -->
+                        <div class="no-offers">
+                            <i class="fas fa-box-open"></i>
+                            <h3>No offers added yet</h3>
+                            <p>Start by adding your first offer to track leads</p>
+                            <button class="btn btn-primary" id="addFirstOfferBtn">
+                                <i class="fas fa-plus"></i> Add Your First Offer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Your Offer Performance</h2>
+                    </div>
+                    <div id="topOffersChart" class="chart-container" style="height: 300px;">
+                        <canvas id="topOffersCanvas"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Recent Activity</h2>
+                    </div>
+                    <div id="recentActivity">
+                        <!-- Recent activity will be injected here -->
+                        <div class="no-leads">
+                            <i class="fas fa-clock"></i>
+                            <h3>No recent activity</h3>
+                            <p>Your recent leads will appear here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Offer Modal -->
+    <div class="modal" id="addOfferModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Offer</h2>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <form id="offerForm">
+                <div class="form-group">
+                    <label for="offerName">Offer Name</label>
+                    <input type="text" id="offerName" class="form-control" placeholder="Enter offer name" required>
+                </div>
+                <div class="form-group">
+                    <label for="offerId">Offer ID</label>
+                    <input type="text" id="offerId" class="form-control" placeholder="Enter unique offer ID" required>
+                </div>
+                <div class="form-group">
+                    <label for="payout">Payout Amount ($)</label>
+                    <input type="number" id="payout" class="form-control" placeholder="0.00" step="0.01" min="0" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="cancelOffer">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Offer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Lead Details Modal -->
+    <div class="modal" id="leadDetailsModal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h2>Lead Details</h2>
+                <button class="modal-close" id="closeDetailsModal">&times;</button>
+            </div>
+            <div class="lead-details-content" id="leadDetailsContent">
+                <!-- Lead details will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Audio for lead notification -->
+    <audio id="leadSound" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3" preload="auto"></audio>
+
+    <script>
+        // Telegram Bot Configuration
+        const BOT_TOKEN = '8039022054:AAG7U4dDQrewsvd5fzL9cUBfmXUpsCmjM94';
+        const CHAT_ID = '5615228649';
+        
+        // DOM Elements
+        const authContainer = document.getElementById('authContainer');
+        const authCard = document.getElementById('authCard');
+        const requestTokenForm = document.getElementById('requestTokenForm');
+        const submitTokenForm = document.getElementById('submitTokenForm');
+        const tokenRequestForm = document.getElementById('tokenRequestForm');
+        const tokenSubmitForm = document.getElementById('tokenSubmitForm');
+        const fullNameInput = document.getElementById('fullName');
+        const emailInput = document.getElementById('email');
+        const accessTokenInput = document.getElementById('accessToken');
+        const requestTokenBtn = document.getElementById('requestTokenBtn');
+        const submitTokenBtn = document.getElementById('submitTokenBtn');
+        const backToRequest = document.getElementById('backToRequest');
+        const tokenTimer = document.getElementById('tokenTimer');
+        const dashboardTokenTimer = document.getElementById('dashboardTokenTimer');
+        const logoutBtn = document.getElementById('logoutBtn');
+        
+        const dashboardContainer = document.getElementById('dashboardContainer');
+        const leadsTableBody = document.getElementById('leadsTableBody');
+        const conversionsTableBody = document.getElementById('conversionsTableBody');
+        const chargebacksTableBody = document.getElementById('chargebacksTableBody');
+        const yourLeadsTableBody = document.getElementById('yourLeadsTableBody');
+        const lastUpdated = document.getElementById('lastUpdated');
+        const refreshLeadsBtn ('addFirstOfferBtn');
+        const addOfferModal = document.getElementById('addOfferModal');
+        const closeModal = document.getElementById('closeModal');
+        const cancelOffer = document.getElementById('cancelOffer');
+        const offerForm = document.getElementById('offerForm');
+        const offersList = docum('leadDetailsModal');
+        const closeDetailsModal = document.getElementById('closeDetailsModal');
+        const leadDetailsContent = document.getElementById('leadDetailsContent');
+        const toast = document.getElementById('toast');
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const recentActivity = document.getElementById('recentActivity');
+        const leadSound = document.getElementById('leadSound');
+        const chartTimeRange = document.getElementById('chartTimeRange');
+        const settingsPanel = document.getElementById('settingsPanel');
+        const settingsToggle = document.getElementById('settingsToggle');
+        const soundToggle = document.getElementById('soundToggle');
+        const themeToggle = document.getElementById('themeToggle');
+        const affiliateIdInput = document.getElementById('affiliateId');
+        const saveAffiliateIdBtn = document.getElementById('saveAffiliateId');
+
+        // Stats elements
+        const todaysLeadsEl = document.getElementById('todaysLeads');
+        const todaysIncomeEl = document.getElementById('todaysIncome');
+        const totalLeadsEl = document.getElementById('totalLeads');
+        const totalIncomeEl = document.getElementById('totalIncome');
+        const todaysLeadsChangeEl = document.getElementById('todaysLeadsChange');
+        const todaysIncomeChangeEl = document.getElementById('todaysIncomeChange');
+        const leadsChangeEl = document.getElementById('leadsChange');
+        const incomeChangeEl = document.getElementById('incomeChange');
+
+        // Charts
+        let leadsChart;
+        let topOffersChart;
+
+        // Data
+        let leads = [];
+        let offers = JSON.parse(localStorage.getItem('cpaOffers')) || [];
+        let previousStats = {
+            todaysLeads: 0,
+            todaysIncome: 0,
+            totalLeads: 0,
+            totalIncome: 0,
+            totalConversions: 0,
+            totalChargebacks: 0
+        };
+        let affiliateId = localStorage.getItem('affiliateId') || '';
+        let soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+        let darkMode = localStorage.getItem('darkMode') === 'true';
+        let lastLeadCount = 0;
+        let tokenExpiryTimer;
+
+        // Check authentication on load
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuthentication();
+            
+            // Apply dark mode if enabled
+            if (darkMode) {
+                document.body.classList.add('dark-mode');
+                themeToggle.checked = true;
+            }
+            
+            soundToggle.checked = soundEnabled;
+            affiliateIdInput.value = affiliateId;
+            
+            // Setup event listeners for auth forms
+            setupAuthEventListeners();
+        });
+
+        // Check if user has valid token
+        function checkAuthentication() {
+            const tokenData = localStorage.getItem('authToken');
+            if (!tokenData) {
+                showAuthForm();
+                return;
+            }
+            
+            try {
+                const { token, expires } = JSON.parse(tokenData);
+                const now = new Date();
+                const expiryDate = new Date(expires);
+                
+                if (now > expiryDate) {
+                    localStorage.removeItem('authToken');
+                    showAuthForm();
+                    showToast('Your access token has expired', 'error');
+                } else {
+                    // Valid token, show dashboard
+                    showDashboard();
+                    startTokenTimer(expiryDate);
+                    
+                    // Initialize dashboard
+                    initDashboard();
+                }
+            } catch (e) {
+                localStorage.removeItem('authToken');
+                showAuthForm();
+            }
+        }
+
+        // Show authentication form
+        function showAuthForm() {
+            authContainer.style.display = 'flex';
+            dashboardContainer.style.display = 'none';
+        }
+
+        // Show dashboard
+        function showDashboard() {
+            authContainer.style.display = 'none';
+            dashboardContainer.style.display = 'block';
+        }
+
+        // Setup event listeners for authentication forms
+        function setupAuthEventListeners() {
+            // Request token form submission
+            tokenRequestForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const fullName = fullNameInput.value.trim();
+                const email = emailInput.value.trim();
+                
+                if (!fullName || !email) {
+                    showToast('Please fill in all fields', 'error');
+                    return;
+                }
+                
+                requestTokenBtn.innerHTML = '<span class="spinner"></span> Requesting...';
+                
+                try {
+                    // Get fingerprint and device info
+                    const fingerprint = await getFingerprint();
+                    const deviceInfo = getDeviceInfo();
+                    
+                    // Generate a request ID
+                    const requestId = generateRequestId();
+                    
+                    // Send request to Telegram bot
+                    const message = `📌 New Access Request\n\n` +
+                                   `🔹 Name: ${fullName}\n` +
+                                   `📧 Email: ${email}\n` +
+                                   `🆔 Request ID: ${requestId}\n\n` +
+                                   `📱 Device Info:\n` +
+                                   `- Browser: ${deviceInfo.browser}\n` +
+                                   `- OS: ${deviceInfo.os}\n` +
+                                   `- Screen: ${deviceInfo.screen}\n` +
+                                   `- Language: ${deviceInfo.language}\n\n` +
+                                   `🖥️ Technical:\n` +
+                                   `- Fingerprint: ${fingerprint}\n` +
+                                   `- IP: ${await getIP()}\n\n` +
+                                   `⏰ Time: ${new Date().toLocaleString()}`;
+                    
+                    await sendTelegramMessage(message);
+                    
+                    // Store the request data temporarily
+                    localStorage.setItem('pendingRequest', JSON.stringify({
+                        fullName,
+                        email,
+                        fingerprint,
+                        deviceInfo,
+                        requestId,
+                        timestamp: new Date().getTime()
+                    }));
+                    
+                    // Switch to token submission form
+                    requestTokenForm.reset();
+                    requestTokenForm.style.display = 'none';
+                    submitTokenForm.style.display = 'block';
+                    
+                    showToast('Access request sent successfully. You will receive your token shortly.', 'info');
+                } catch (error) {
+                    console.error('Error requesting token:', error);
+                    showToast('Failed to send access request. Please try again.', 'error');
+                } finally {
+                    requestTokenBtn.innerHTML = '<i class="fas fa-key"></i> Get Access Token';
+                }
+            });
+            
+            // Submit token form submission
+            tokenSubmitForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const token = accessTokenInput.value.trim();
+                if (!token) {
+                    showToast('Please enter your access token', 'error');
+                    return;
+                }
+                
+                submitTokenBtn.innerHTML = '<span class="spinner"></span> Verifying...';
+                
+                // In a real implementation, you would verify the token with your server
+                // For this demo, we'll assume the token is valid
+                setTimeout(() => {
+                    // Generate expiry date (6 days from now)
+                    const expiryDate = new Date();
+                    expiryDate.setDate(expiryDate.getDate() + 6);
+                    
+                    // Store the token
+                    localStorage.setItem('authToken', JSON.stringify({
+                        token,
+                        expires: expiryDate.toISOString()
+                    }));
+                    
+                    // Show dashboard
+                    showDashboard();
+                    startTokenTimer(expiryDate);
+                    
+                    // Initialize dashboard
+                    initDashboard();
+                    
+                    showToast('Access granted! Welcome to your dashboard.', 'success');
+                }, 1500);
+            });
+            
+            // Back to request form
+            backToRequest.addEventListener('click', (e) => {
+                e.preventDefault();
+                submitTokenForm.style.display = 'none';
+                requestTokenForm.style.display = 'block';
+            });
+            
+            // Logout button
+            logoutBtn.addEventListener('click', () => {
+                localStorage.removeItem('authToken');
+                showAuthForm();
+                showToast('You have been logged out', 'info');
+                clearInterval(tokenExpiryTimer);
+            });
+        }
+
+        // Get device fingerprint
+        function getFingerprint() {
+            return new Promise(resolve => {
+                if (window.requestIdleCallback) {
+                    requestIdleCallback(() => {
+                        Fingerprint2.get(components => {
+                            const values = components.map(component => component.value);
+                            const fingerprint = Fingerprint2.x64hash128(values.join(''), 31);
+                            resolve(fingerprint);
+                        });
+                    });
+                } else {
+                    setTimeout(() => {
+                        Fingerprint2.get(components => {
+                            const values = components.map(component => component.value);
+                            const fingerprint = Fingerprint2.x64hash128(values.join(''), 31);
+                            resolve(fingerprint);
+                        });
+                    }, 500);
+                }
+            });
+        }
+
+        // Get device info
+        function getDeviceInfo() {
+            const userAgent = navigator.userAgent;
+            let browser = 'Unknown';
+            let os = 'Unknown';
+            
+            // Detect browser
+            if (userAgent.includes('Firefox')) {
+                browser = 'Firefox';
+            } else if (userAgent.includes('SamsungBrowser')) {
+                browser = 'Samsung Browser';
+            } else if (userAgent.includes('Opera') || userAgent.includes('OPR')) {
+                browser = 'Opera';
+            } else if (userAgent.includes('Trident')) {
+                browser = 'Internet Explorer';
+            } else if (userAgent.includes('Edge')) {
+                browser = 'Edge';
+            } else if (userAgent.includes('Chrome')) {
+                browser = 'Chrome';
+            } else if (userAgent.includes('Safari')) {
+                browser = 'Safari';
+            }
+            
+            // Detect OS
+            if (userAgent.includes('Android')) {
+                os = 'Android';
+            } else if (userAgent.includes('iOS') || userAgent.includes('iPhone') || userAgent.includes('iPad')) {
+                os = 'iOS';
+            } else if (userAgent.includes('Windows')) {
+                os = 'Windows';
+            } else if (userAgent.includes('Mac OS')) {
+                os = 'Mac OS';
+            } else if (userAgent.includes('Linux')) {
+                os = 'Linux';
+            }
+            
+            return {
+                browser,
+                os,
+                screen: `${window.screen.width}x${window.screen.height}`,
+                language: navigator.language
+            };
+        }
+
+        // Get public IP
+        async function getIP() {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                return data.ip || 'Unknown';
+            } catch (e) {
+                return 'Unknown';
+            }
+        }
+
+        // Generate request ID
+        function generateRequestId() {
+            return 'req_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+        }
+
+        // Send message to Telegram bot
+        async function sendTelegramMessage(message) {
+            try {
+                const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+                const params = new URLSearchParams();
+                params.append('chat_id', CHAT_ID);
+                params.append('text', message);
+                params.append('parse_mode', 'HTML');
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: params
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to send message');
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('Error sending Telegram message:', error);
+                throw error;
+            }
+        }
+
+        // Start token expiry timer
+        function startTokenTimer(expiryDate) {
+            clearInterval(tokenExpiryTimer);
+            
+            function updateTimer() {
+                const now = new Date();
+                const diff = expiryDate - now;
+                
+                if (diff <= 0) {
+                    clearInterval(tokenExpiryTimer);
+                    localStorage.removeItem('authToken');
+                    showAuthForm();
+                    showToast('Your access token has expired', 'error');
+                    return;
+                }
+                
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                
+                const displayText = days > 0 
+                    ? `${days} day${days !== 1 ? 's' : ''}`
+                    : hours > 0
+                        ? `${hours} hour${hours !== 1 ? 's' : ''}`
+                        : `${minutes} minute${minutes !== 1 ? 's' : ''}`;
+                
+                if (tokenTimer) tokenTimer.textContent = displayText;
+                if (dashboardTokenTimer) dashboardTokenTimer.textContent = displayText;
+            }
+            
+            updateTimer();
+            tokenExpiryTimer = setInterval(updateTimer, 60000);
+        }
+
+        // Initialize the dashboard
+        function initDashboard() {
+            fetchLeads();
+            renderOffersList();
+            setupDashboardEventListeners();
+            initCharts();
+            
+            // Refresh data every 1 seconds
+            setInterval(fetchLeads, 1000);
+        }
+
+        // Setup event listeners for dashboard
+        function setupDashboardEventListeners() {
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    const tabId = tab.getAttribute('data-tab');
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === `tab-${tabId}`) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+
+            // Modal controls
+            addOfferBtn.addEventListener('click', showAddOfferModal);
+            addOfferBtnSidebar.addEventListener('click', showAddOfferModal);
+            addFirstOfferBtn.addEventListener('click', showAddOfferModal);
+            closeModal.addEventListener('click', hideAddOfferModal);
+            cancelOffer.addEventListener('click', hideAddOfferModal);
+            closeDetailsModal.addEventListener('click', hideLeadDetailsModal);
+            refreshLeadsBtn.addEventListener('click', fetchLeads);
+
+            // Form submission
+            offerForm.addEventListener('submit', handleOfferFormSubmit);
+
+            // Chart time range change
+            chartTimeRange.addEventListener('change', updateCharts);
+
+            // Settings panel toggle
+            settingsToggle.addEventListener('click', toggleSettingsPanel);
+
+            // Sound toggle
+            soundToggle.addEventListener('change', (e) => {
+                soundEnabled = e.target.checked;
+                localStorage.setItem('soundEnabled', soundEnabled);
+                showToast(`Notification sound ${soundEnabled ? 'enabled' : 'disabled'}`);
+            });
+
+            // Theme toggle
+            themeToggle.addEventListener('change', (e) => {
+                darkMode = e.target.checked;
+                localStorage.setItem('darkMode', darkMode);
+                document.body.classList.toggle('dark-mode', darkMode);
+                showToast(`Dark mode ${darkMode ? 'enabled' : 'disabled'}`);
+            });
+
+            // Save affiliate ID
+            saveAffiliateIdBtn.addEventListener('click', () => {
+                affiliateId = affiliateIdInput.value.trim();
+                localStorage.setItem('affiliateId', affiliateId);
+                showToast('Affiliate ID saved successfully!');
+                fetchLeads(); // Refresh to show your leads
+            });
+        }
+
+        // Toggle settings panel
+        function toggleSettingsPanel() {
+            settingsPanel.classList.toggle('open');
+        }
+
+        // Show add offer modal
+        function showAddOfferModal() {
+            addOfferModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Hide add offer modal
+        function hideAddOfferModal() {
+            addOfferModal.classList.remove('active');
+            document.body.style.overflow = '';
+            offerForm.reset();
+        }
+
+        // Show lead details modal
+        function showLeadDetailsModal(lead) {
+            leadDetailsContent.innerHTML = `
+                <div class="form-group">
+                    <label>Lead ID</label>
+                    <div class="form-control" style="background: #f8f9fa;">${lead.lead_id || 'N/A'}</div>
+                </div>
+                <div class="form-group">
+                    <label>Offer</label>
+                    <div class="form-control" style="background: #f8f9fa;">${lead.offer_name || lead.offer || 'Unknown'}</div>
+                </div>
+                <div class="form-group">
+                    <label>Payout</label>
+                    <div class="form-control" style="background: #f8f9fa;">$${parseFloat(lead.payout || 0).toFixed(2)}</div>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <div class="form-control" style="background: #f8f9fa;">
+                        <span class="status ${lead.status == 1 ? 'status-conversion' : 'status-chargeback'}">
+                            ${lead.status == 1 ? 'Conversion' : 'Chargeback'}
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Country</label>
+                    <div class="form-control" style="background: #f8f9fa;">${lead.country_code || 'Unknown'}</div>
+                </div>
+                <div class="form-group">
+                    <label>IP Address</label>
+                    <div class="form-control" style="background: #f8f9fa;">${lead.ip || 'N/A'}</div>
+                </div>
+                <div class="form-group">
+                    <label>Click ID</label>
+                    <div class="form-control" style="background: #f8f9fa;">${lead.click_id || 'N/A'}</div>
+                </div>
+                <div class="form-group">
+                    <label>Sub IDs</label>
+                    <div class="form-control" style="background: #f8f9fa;">
+                        s1: ${lead.s1 || '-'}<br>
+                        s2: ${lead.s2 || '-'}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Time</label>
+                    <div class="form-control" style="background: #f8f9fa;">${lead.timestamp || 'N/A'}</div>
+                </div>
+            `;
+            leadDetailsModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Hide lead details modal
+        function hideLeadDetailsModal() {
+            leadDetailsModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Handle offer form submission
+        function handleOfferFormSubmit(e) {
+            e.preventDefault();
+            
+            const offerName = document.getElementById('offerName').value;
+            const offerId = document.getElementById('offerId').value;
+            const payout = parseFloat(document.getElementById('payout').value) || 0;
+            
+            // Check if offer ID already exists
+            if (offers.some(offer => offer.id === offerId)) {
+                showToast('Offer ID already exists', 'error');
+                return;
+            }
+            
+            const newOffer = {
+                id: offerId,
+                name: offerName,
+                payout: payout,
+                postbackUrl: `offer=${offerId}&offer_name=${encodeURIComponent(offerName)}&payout=${payout}&payout_cents=${payout * 100}&ip={ip}&status={status}&unix={unix}&s1={s1}&s2={s2}&lead_id={lead_id}&click_id={click_id}&country_code={country_code}`
+            };
+            
+            offers.push(newOffer);
+            saveOffers();
+            renderOffersList();
+            hideAddOfferModal();
+            showToast('Offer added successfully!');
+            
+            // Update charts with new offer data
+            updateCharts();
+        }
+
+        // Save offers to localStorage
+        function saveOffers() {
+            localStorage.setItem('cpaOffers', JSON.stringify(offers));
+        }
+
+        // Render offers list
+        function renderOffersList() {
+            if (offers.length === 0) {
+                offersList.innerHTML = `
+                    <div class="no-offers">
+                        <i class="fas fa-box-open"></i>
+                        <h3>No offers added yet</h3>
+                        <p>Start by adding your first offer to track leads</p>
+                        <button class="btn btn-primary" id="addFirstOfferBtn">
+                            <i class="fas fa-plus"></i> Add Your First Offer
+                        </button>
+                    </div>
+                `;
+                document.getElementById('addFirstOfferBtn').addEventListener('click', showAddOfferModal);
+                return;
+            }
+            
+            let html = '';
+            offers.forEach(offer => {
+                html += `
+                    <div class="offer-card">
+                        <div class="offer-card-header">
+                            <h3 class="offer-card-title">${offer.name}</h3>
+                            <div class="offer-card-payout">$${offer.payout.toFixed(2)}</div>
+                        </div>
+                        <div class="offer-card-body">
+                            <div><strong>Offer ID:</strong> ${offer.id}</div>
+                            <div style="margin-top: 10px;"><strong>Postback URL:</strong></div>
+                            <div style="font-size: 13px; word-break: break-all; margin-top: 5px; background: #f8f9fa; padding: 8px; border-radius: 6px;">${offer.postbackUrl}</div>
+                        </div>
+                        <div class="offer-card-footer">
+                            <span class="offer-card-id">ID: ${offer.id}</span>
+                            <button class="copy-btn" data-url="${offer.postbackUrl}">
+                                <i class="fas fa-copy"></i> Copy URL
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            offersList.innerHTML = html;
+            
+            // Add event listeners to copy buttons
+            document.querySelectorAll('.copy-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const url = btn.getAttribute('data-url');
+                    navigator.clipboard.writeText(url).then(() => {
+                        showToast('Postback URL copied to clipboard!');
+                    });
+                });
+            });
+        }
+
+        // Fetch leads from leads.json
+        async function fetchLeads() {
+            try {
+                refreshLeadsBtn.innerHTML = '<span class="spinner"></span> Refreshing';
+                
+                const response = await fetch('leads.json?' + Date.now()); // prevent cache
+                if (!response.ok) throw new Error('Failed to load leads.json');
+                const newLeads = await response.json();
+
+                if (!Array.isArray(newLeads) || newLeads.length === 0) {
+                    if (leads.length === 0) {
+                        leadsTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 50px; color: #6c757d;"><i class="fas fa-inbox" style="font-size: 40px; margin-bottom: 15px; opacity: 0.5;"></i><h3>No leads found yet</h3></td></tr>';
+                        conversionsTableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 50px; color: #6c757d;"><i class="fas fa-check-circle" style="font-size: 40px; margin-bottom: 15px; opacity: 0.5;"></i><h3>No conversions yet</h3></td></tr>';
+                        chargebacksTableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 50px; color: #6c757d;"><i class="fas fa-times-circle" style="font-size: 40px; margin-bottom: 15px; opacity: 0.5;"></i><h3>No chargebacks yet</h3></td></tr>';
+                        yourLeadsTableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 50px; color: #6c757d;"><i class="fas fa-user-clock" style="font-size: 40px; margin-bottom: 15px; opacity: 0.5;"></i><h3>No leads for your account yet</h3></td></tr>';
+                    }
+                    lastUpdated.textContent = `Last updated: ${new Date().toLocaleString()}`;
+                    refreshLeadsBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+                    return;
+                }
+
+                // Process leads to add formatted timestamp
+                const processedLeads = newLeads.map(lead => {
+                    const unixTimestamp = lead.unix || Math.floor(Date.now() / 1000);
+                    return {
+                        ...lead,
+                        unix: unixTimestamp,
+                        timestamp: formatTimestamp(unixTimestamp),
+                        isToday: isToday(unixTimestamp),
+                        isYours: affiliateId && (lead.s1 === affiliateId || lead.s2 === affiliateId)
+                    };
+                });
+
+                // Check for new leads and play sound if enabled
+                if (soundEnabled && newLeads.length > lastLeadCount) {
+                    const newLeadCount = newLeads.length - lastLeadCount;
+                    if (newLeadCount > 0) {
+                        leadSound.play().catch(e => console.log('Audio playback prevented:', e));
+                        showToast(`New lead${newLeadCount > 1 ? 's' : ''} detected!`, 'info');
+                    }
+                }
+                lastLeadCount = newLeads.length;
+
+                leads = processedLeads;
+                renderLeadsTables();
+                updateStats();
+                updateCharts();
+                updateRecentActivity();
+                lastUpdated.textContent = `Last updated: ${new Date().toLocaleString()}`;
+                refreshLeadsBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+            } catch (error) {
+                console.error('Error loading leads:', error);
+                showToast(`Error loading leads: ${error.message}`, 'error');
+                lastUpdated.textContent = 'Error loading leads';
+                refreshLeadsBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+            }
+        }
+
+        // Check if timestamp is today (BD time)
+        function isToday(unixTimestamp) {
+            const now = new Date();
+            const leadDate = new Date(unixTimestamp * 1000);
+            
+            // Adjust for Bangladesh time (UTC+6)
+            const bdOffset = 6 * 60 * 60 * 1000;
+            const nowBD = new Date(now.getTime() + bdOffset);
+            const leadDateBD = new Date(leadDate.getTime() + bdOffset);
+            
+            // Check if it's after 12 PM BD time (reset time)
+            const resetHour = 12;
+            const currentHourBD = nowBD.getUTCHours();
+            
+            // If current time is before 12 PM BD time, compare with yesterday
+            if (currentHourBD < resetHour) {
+                const yesterday = new Date(nowBD);
+                yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+                
+                return (
+                    leadDateBD.getUTCFullYear() === yesterday.getUTCFullYear() &&
+                    leadDateBD.getUTCMonth() === yesterday.getUTCMonth() &&
+                    leadDateBD.getUTCDate() === yesterday.getUTCDate()
+                );
+            }
+            
+            // If current time is after 12 PM BD time, compare with today
+            return (
+                leadDateBD.getUTCFullYear() === nowBD.getUTCFullYear() &&
+                leadDateBD.getUTCMonth() === nowBD.getUTCMonth() &&
+                leadDateBD.getUTCDate() === nowBD.getUTCDate()
+            );
+        }
+
+        // Render leads tables
+        function renderLeadsTables() {
+            if (leads.length === 0) return;
+
+            let allLeadsHtml = '';
+            let conversionsHtml = '';
+            let chargebacksHtml = '';
+            let yourLeadsHtml = '';
+
+            leads.forEach(lead => {
+                // All leads table row
+                allLeadsHtml += `
+                    <tr>
+                        <td>${lead.lead_id || 'N/A'}</td>
+                        <td>${lead.offer_name || lead.offer || 'Unknown'}</td>
+                        <td>$${parseFloat(lead.payout || 0).toFixed(2)}</td>
+                        <td>${lead.country_code || 'Unknown'}</td>
+                        <td>
+                            <span class="status ${lead.status == 1 ? 'status-conversion' : 'status-chargeback'}">
+                                ${lead.status == 1 ? 'Conversion' : 'Chargeback'}
+                            </span>
+                        </td>
+                        <td>${lead.timestamp || 'N/A'}</td>
+                        <td>
+                            <button class="btn btn-outline btn-sm view-details" data-lead-id="${lead.lead_id}">
+                                <i class="fas fa-eye"></i> Details
+                            </button>
+                        </td>
+                    </tr>
+                `;
+
+                // Conversions table row
+                if (lead.status == 1) {
+                    conversionsHtml += `
+                        <tr>
+                            <td>${lead.lead_id || 'N/A'}</td>
+                            <td>${lead.offer_name || lead.offer || 'Unknown'}</td>
+                            <td>$${parseFloat(lead.payout || 0).toFixed(2)}</td>
+                            <td>${lead.country_code || 'Unknown'}</td>
+                            <td>${lead.timestamp || 'N/A'}</td>
+                        </tr>
+                    `;
+                }
+
+                // Chargebacks table row
+                if (lead.status != 1) {
+                    chargebacksHtml += `
+                        <tr>
+                            <td>${lead.lead_id || 'N/A'}</td>
+                            <td>${lead.offer_name || lead.offer || 'Unknown'}</td>
+                            <td>$${parseFloat(lead.payout || 0).toFixed(2)}</td>
+                            <td>${lead.country_code || 'Unknown'}</td>
+                            <td>${lead.timestamp || 'N/A'}</td>
+                        </tr>
+                    `;
+                }
+
+                // Your leads table row
+                if (lead.isYours) {
+                    yourLeadsHtml += `
+                        <tr>
+                            <td>${lead.lead_id || 'N/A'}</td>
+                            <td>${lead.offer_name || lead.offer || 'Unknown'}</td>
+                            <td>$${parseFloat(lead.payout || 0).toFixed(2)}</td>
+                            <td>${lead.country_code || 'Unknown'}</td>
+                            <td>
+                                <span class="status ${lead.status == 1 ? 'status-conversion' : 'status-chargeback'}">
+                                    ${lead.status == 1 ? 'Conversion' : 'Chargeback'}
+                                </span>
+                            </td>
+                            <td>${lead.timestamp || 'N/A'}</td>
+                        </tr>
+                    `;
+                }
+            });
+
+            leadsTableBody.innerHTML = allLeadsHtml || '<tr><td colspan="7" style="text-align: center; padding: 50px; color: #6c757d;"><i class="fas fa-inbox" style="font-size: 40px; margin-bottom: 15px; opacity: 0.5;"></i><h3>No leads found yet</h3></td></tr>';
+            conversionsTableBody.innerHTML = conversionsHtml || '<tr><td colspan="5" style="text-align: center; padding: 50px; color: #6c757d;"><i class="fas fa-check-circle" style="font-size: 40px; margin-bottom: 15px; opacity: 0.5;"></i><h3>No conversions yet</h3></td></tr>';
+            chargebacksTableBody.innerHTML = chargebacksHtml || '<tr><td colspan="5" style="text-align: center; padding: 50px; color: #6c757d;"><i class="fas fa-times-circle" style="font-size: 40px; margin-bottom: 15px; opacity: 0.5;"></i><h3>No chargebacks yet</h3></td></tr>';
+            yourLeadsTableBody.innerHTML = yourLeadsHtml || '<tr><td colspan="6" style="text-align: center; padding: 50px; color: #6c757d;"><i class="fas fa-user-clock" style="font-size: 40px; margin-bottom: 15px; opacity: 0.5;"></i><h3>No leads for your account yet</h3></td></tr>';
+
+            // Add event listeners to view details buttons
+            document.querySelectorAll('.view-details').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const leadId = btn.getAttribute('data-lead-id');
+                    const lead = leads.find(l => l.lead_id === leadId);
+                    if (lead) {
+                        showLeadDetailsModal(lead);
+                    }
+                });
+            });
+        }
+
+        // Update recent activity
+        function updateRecentActivity() {
+            if (leads.length === 0) {
+                recentActivity.innerHTML = `
+                    <div class="no-leads">
+                        <i class="fas fa-clock"></i>
+                        <h3>No recent activity</h3>
+                        <p>Your recent leads will appear here</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Get last 5 leads (filtered by affiliate ID if set)
+            let recentLeads = [...leads].reverse();
+            if (affiliateId) {
+                recentLeads = recentLeads.filter(lead => lead.isYours);
+            }
+            recentLeads = recentLeads.slice(0, 5);
+            
+            if (recentLeads.length === 0) {
+                recentActivity.innerHTML = `
+                    <div class="no-leads">
+                        <i class="fas fa-clock"></i>
+                        <h3>No recent activity</h3>
+                        <p>Your recent leads will appear here</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+
+            recentLeads.forEach(lead => {
+                html += `
+                    <div class="offer-card" style="margin-bottom: 15px;">
+                        <div class="offer-card-header">
+                            <h3 class="offer-card-title">${lead.offer_name || lead.offer || 'Unknown'}</h3>
+                            <div class="offer-card-payout">$${parseFloat(lead.payout || 0).toFixed(2)}</div>
+                        </div>
+                        <div class="offer-card-body">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span><strong>Status:</strong> <span class="status ${lead.status == 1 ? 'status-conversion' : 'status-chargeback'}">${lead.status == 1 ? 'Conversion' : 'Chargeback'}</span></span>
+                                <span><strong>Country:</strong> ${lead.country_code || 'Unknown'}</span>
+                            </div>
+                            <div><strong>Time:</strong> ${lead.timestamp || 'N/A'}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            recentActivity.innerHTML = html;
+        }
+
+        // Update stats cards
+        function updateStats() {
+            const todaysLeads = leads.filter(lead => lead.isToday).length;
+            const todaysIncome = leads.filter(lead => lead.isToday).reduce((sum, lead) => sum + (parseFloat(lead.payout) || 0), 0);
+            const totalLeads = leads.length;
+            const totalIncome = leads.reduce((sum, lead) => sum + (parseFloat(lead.payout) || 0), 0);
+            const totalConversions = leads.filter(lead => lead.status == 1).length;
+            const totalChargebacks = leads.filter(lead => lead.status != 1).length;
+
+            // Update current stats
+            todaysLeadsEl.textContent = todaysLeads;
+            todaysIncomeEl.textContent = `$${todaysIncome.toFixed(2)}`;
+            totalLeadsEl.textContent = totalLeads;
+            totalIncomeEl.textContent = `$${totalIncome.toFixed(2)}`;
+
+            // Calculate changes
+            const todaysLeadsChange = calculateChange(previousStats.todaysLeads, todaysLeads);
+            const todaysIncomeChange = calculateChange(previousStats.todaysIncome, todaysIncome);
+            const leadsChange = calculateChange(previousStats.totalLeads, totalLeads);
+            const incomeChange = calculateChange(previousStats.totalIncome, totalIncome);
+
+            // Update change indicators
+            updateChangeIndicator(todaysLeadsChangeEl, todaysLeadsChange);
+            updateChangeIndicator(todaysIncomeChangeEl, todaysIncomeChange);
+            updateChangeIndicator(leadsChangeEl, leadsChange);
+            updateChangeIndicator(incomeChangeEl, incomeChange);
+
+            // Save current stats as previous for next update
+            previousStats = {
+                todaysLeads,
+                todaysIncome,
+                totalLeads,
+                totalIncome,
+                totalConversions,
+                totalChargebacks
+            };
+        }
+
+        // Calculate percentage change
+        function calculateChange(previous, current) {
+            if (previous === 0) return current === 0 ? 0 : 100;
+            return ((current - previous) / previous) * 100;
+        }
+
+        // Update change indicator element
+        function updateChangeIndicator(element, change) {
+            const changeValue = Math.abs(change).toFixed(1);
+            
+            if (change > 0) {
+                element.className = 'change positive';
+                element.innerHTML = `<i class="fas fa-arrow-up"></i><span>${changeValue}%</span>`;
+            } else if (change < 0) {
+                element.className = 'change negative';
+                element.innerHTML = `<i class="fas fa-arrow-down"></i><span>${changeValue}%</span>`;
+            } else {
+                element.className = 'change';
+                element.innerHTML = `<span>${changeValue}%</span>`;
+            }
+        }
+
+        // Initialize charts
+        function initCharts() {
+            const leadsCtx = document.getElementById('leadsChart').getContext('2d');
+            const topOffersCtx = document.getElementById('topOffersCanvas').getContext('2d');
+            
+            // Gradient for charts
+            const gradient = leadsCtx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(58, 123, 213, 0.5)');
+            gradient.addColorStop(1, 'rgba(58, 123, 213, 0)');
+            
+            const gradient2 = leadsCtx.createLinearGradient(0, 0, 0, 400);
+            gradient2.addColorStop(0, 'rgba(255, 65, 108, 0.5)');
+            gradient2.addColorStop(1, 'rgba(255, 65, 108, 0)');
+            
+            leadsChart = new Chart(leadsCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Conversions',
+                            data: [],
+                            borderColor: '#38ef7d',
+                            backgroundColor: gradient,
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#38ef7d',
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: 'Chargebacks',
+                            data: [],
+                            borderColor: '#ff416c',
+                            backgroundColor: gradient2,
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#ff416c',
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: {
+                                    family: 'Poppins',
+                                    size: 13
+                                }
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(0,0,0,0.8)',
+                            titleFont: {
+                                family: 'Poppins',
+                                size: 14
+                            },
+                            bodyFont: {
+                                family: 'Poppins',
+                                size: 13
+                            },
+                            padding: 12,
+                            cornerRadius: 8,
+                            usePointStyle: true
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    family: 'Poppins'
+                                }
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            },
+                            ticks: {
+                                precision: 0,
+                                font: {
+                                    family: 'Poppins'
+                                }
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
+                    }
+                }
+            });
+            
+            topOffersChart = new Chart(topOffersCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: [
+                            '#3a7bd5',
+                            '#38ef7d',
+                            '#ff9a00',
+                            '#ff416c',
+                            '#9b59b6',
+                            '#24fe41',
+                            '#2c3e50'
+                        ],
+                        borderWidth: 0,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: {
+                                    family: 'Poppins',
+                                    size: 13
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.8)',
+                            titleFont: {
+                                family: 'Poppins',
+                                size: 14
+                            },
+                            bodyFont: {
+                                family: 'Poppins',
+                                size: 13
+                            },
+                            padding: 12,
+                            cornerRadius: 8,
+                            usePointStyle: true,
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            updateCharts();
+        }
+
+        // Update charts with current data
+        function updateCharts() {
+            if (leads.length === 0) return;
+            
+            const days = parseInt(chartTimeRange.value) || 7;
+            
+            // Update leads timeline chart
+            const dateRange = getLastNDays(days);
+            const conversionsByDay = Array(days).fill(0);
+            const chargebacksByDay = Array(days).fill(0);
+            
+            leads.forEach(lead => {
+                const leadDate = new Date((lead.unix || Math.floor(Date.now() / 1000)) * 1000);
+                const dayDiff = Math.floor((Date.now() - leadDate.getTime()) / (1000 * 60 * 60 * 24));
+                
+                if (dayDiff >= 0 && dayDiff < days) {
+                    if (lead.status == 1) {
+                        conversionsByDay[days - 1 - dayDiff]++;
+                    } else {
+                        chargebacksByDay[days - 1 - dayDiff]++;
+                    }
+                }
+            });
+            
+            leadsChart.data.labels = dateRange;
+            leadsChart.data.datasets[0].data = conversionsByDay;
+            leadsChart.data.datasets[1].data = chargebacksByDay;
+            leadsChart.update();
+            
+            // Update top offers chart (filtered by affiliate ID if set)
+            if (offers.length > 0) {
+                const offerCounts = {};
+                offers.forEach(offer => {
+                    const filteredLeads = affiliateId 
+                        ? leads.filter(lead => (lead.offer_name === offer.name || lead.offer === offer.id) && lead.isYours)
+                        : leads.filter(lead => lead.offer_name === offer.name || lead.offer === offer.id);
+                    offerCounts[offer.name] = filteredLeads.length;
+                });
+                
+                const sortedOffers = Object.entries(offerCounts)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 5);
+                
+                topOffersChart.data.labels = sortedOffers.map(o => o[0]);
+                topOffersChart.data.datasets[0].data = sortedOffers.map(o => o[1]);
+                topOffersChart.update();
+            }
+        }
+
+        // Helper function to get last N days labels
+        function getLastNDays(n) {
+            const days = [];
+            for (let i = n - 1; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                days.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+            }
+            return days;
+        }
+
+        // Format timestamp
+        function formatTimestamp(unixTimestamp) {
+            const date = new Date(unixTimestamp * 1000);
+            return date.toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            });
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            const icon = type === 'error' ? 'fas fa-exclamation-circle' : 
+                        type === 'warning' ? 'fas fa-exclamation-triangle' : 
+                        'fas fa-check-circle';
+            
+            toast.innerHTML = `
+                <i class="${icon}"></i>
+                <span>${message}</span>
+            `;
+            toast.className = `toast ${type} show`;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
